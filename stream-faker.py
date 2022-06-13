@@ -2,7 +2,7 @@ from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from mimetypes import guess_type
 remixing={
     'popsapp/assets/js/videojs-youtube.min.js':'a.js',
-    'v1/drm/keys?type=widevine':'a.txt'
+    # 'v1/drm/keys?type=widevine':'a.txt'
 }
 
 from requests import get, options, post
@@ -28,8 +28,10 @@ class mybackend(BaseHTTPRequestHandler):
             # print(res.content)
     def do_POST(self):
         if self.path[1:] in remixing:
+            print(1)
             self.send_response(200)
-            self.send_header('content-type',guess_type(remixing[self.path[1:]])[0])
+            self.send_header('Access-Control-Allow-Origin','*')
+            # self.send_header('content-type',guess_type(remixing[self.path[1:]])[0])
             self.end_headers()
             self.wfile.write(open(remixing[self.path[1:]],'rb').read())
         else:
@@ -44,9 +46,10 @@ class mybackend(BaseHTTPRequestHandler):
             # self.send_header('set-cookie',res.headers['set-cookie'])
             self.end_headers()
             self.wfile.write(res.content)
+            # print(res.content)
+            # open('a.txt','wb').write(res.content)
     def do_OPTIONS(self):
         if self.path== "/v1/drm/keys?type=widevine":
-            print(1)
             self.send_response(200)
             self.send_header('Access-Control-Allow-Origin','*')
             self.send_header('Access-Control-Allow-Headers','Content-Type')
