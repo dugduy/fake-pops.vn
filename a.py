@@ -12,7 +12,7 @@ class mybackend(BaseHTTPRequestHandler):
         self.send_header('content-type',res.headers['content-type'])
         self.send_header('set-cookie',res.headers['set-cookie'])
         self.end_headers()
-        self.wfile.write(res.content.replace(b'https://cdn.popsww.com',b'http://localhost:8080'))
+        self.wfile.write(res.content.replace(b'https://cdn.popsww.com',b'http://localhost:8080').replace(b'https://stream.popsww.com',b'http://localhost:8081'))
         # print(res.content)
     def do_POST(self):
         self.headers['host']='pops.vn'
