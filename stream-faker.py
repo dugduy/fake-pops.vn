@@ -27,17 +27,23 @@ class mybackend(BaseHTTPRequestHandler):
             self.wfile.write(res.content)
             # print(res.content)
     def do_POST(self):
-        myheader=self.headers
-        myheader['host']='stream.popsww.com'
-        res=post('https://stream.popsww.com'+self.path,self.rfile.read(int(myheader['content-length'])),headers=myheader)
-        self.send_response(res.status_code)
-        # for k,v in res.headers.items():
-        #     self.send_header(k,v)
-        self.send_header('Access-Control-Allow-Origin','*')
-        self.send_header('content-type',res.headers.get('content-type'))
-        # self.send_header('set-cookie',res.headers['set-cookie'])
-        self.end_headers()
-        self.wfile.write(res.content)
+        if self.path[1:] in remixing:
+            self.send_response(200)
+            self.send_header('content-type',guess_type(remixing[self.path[1:]])[0])
+            self.end_headers()
+            self.wfile.write(open(remixing[self.path[1:]],'rb').read())
+        else:
+            myheader=self.headers
+            myheader['host']='stream.popsww.com'
+            res=post('https://stream.popsww.com'+self.path,self.rfile.read(int(myheader['content-length'])),headers=myheader)
+            self.send_response(res.status_code)
+            # for k,v in res.headers.items():
+            #     self.send_header(k,v)
+            self.send_header('Access-Control-Allow-Origin','*')
+            self.send_header('content-type',res.headers.get('content-type'))
+            # self.send_header('set-cookie',res.headers['set-cookie'])
+            self.end_headers()
+            self.wfile.write(res.content)
     def do_OPTIONS(self):
         if self.path== "/v1/drm/keys?type=widevine":
             print(1)
